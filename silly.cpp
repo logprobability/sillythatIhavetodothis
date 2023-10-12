@@ -8,3 +8,14 @@
 // Ideas I have for what this file might be:
 //  - algorithm practice for leetcode type problems (but done backwards, going through std::algorithms, back into popular problem types)
 //  - a workflow-based approach to testing atypical index datastructures. 
+
+// I've decided to go with the former for now
+
+#include <algorithm>
+
+using std::ranges;
+
+int main()
+{
+  return 0;
+}
