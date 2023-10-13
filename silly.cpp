@@ -12,10 +12,26 @@
 // I've decided to go with the former for now
 
 #include <algorithm>
+#include <ranges>
 
 using std::ranges;
+using std::algorithm;
 
 int main()
 {
+  // from the ranges tutorial - this is a placeholder right now
+  std::vector<int> input = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+  std::vector<int> intermediate, output;
+
+  std::copy_if(input.begin(), input.end(), std::back_inserter(intermediate), [](const int i) { return i%3 == 0; });
+  std::transform(intermediate.begin(), intermediate.end(), std::back_inserter(output), [](const int i) {return i*i; });
+
+  // requires /std:c++20
+  std::vector<int> input = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+  auto output = input
+      | std::views::filter([](const int n) {return n % 3 == 0; })
+      | std::views::transform([](const int n) {return n * n; });
+
   return 0;
 }
