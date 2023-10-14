@@ -9,7 +9,7 @@
 //  - algorithm practice for leetcode type problems (but done backwards, going through std::algorithms, back into popular problem types)
 //  - a workflow-based approach to testing atypical index datastructures. 
 
-// I've decided to go with the former for now
+// I've decided to go with the former for now (also I haven't checked that this compiles yet, just setting things up mentally and such)
 
 #include <algorithm>
 #include <ranges>
@@ -20,12 +20,6 @@ using std::algorithm;
 int main()
 {
   // from the ranges tutorial - this is a placeholder right now
-  std::vector<int> input = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-  std::vector<int> intermediate, output;
-
-  std::copy_if(input.begin(), input.end(), std::back_inserter(intermediate), [](const int i) { return i%3 == 0; });
-  std::transform(intermediate.begin(), intermediate.end(), std::back_inserter(output), [](const int i) {return i*i; });
-
   // requires /std:c++20
   std::vector<int> input = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
@@ -33,5 +27,9 @@ int main()
       | std::views::filter([](const int n) {return n % 3 == 0; })
       | std::views::transform([](const int n) {return n * n; });
 
+  do {
+    print(output)
+  } while(std::ranges::next_permutation(output, std::greater()).found)
+  
   return 0;
 }
