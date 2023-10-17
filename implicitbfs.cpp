@@ -1,12 +1,64 @@
 #include <iostream>
-#include <unordered_map>
 #include <queue>
+#include <unordered_map>
+#include <vector>
 #include <functional>
+#include <limits>
 
-template <typename T>
+// this is a sketch - helped by my llm, but will be updated to a better implementation tomorrow.
+
+template <typename T, typename Weight = int>
 class Graph {
 public:
     Graph() {}
+
+    void Dijkstra(
+        const T& start, 
+        std::function<std::vector<std::pair<T, Weight>>(const T&)> getNeighbors,
+        std::function<bool(const T&)> isTerminal
+    ) {
+        std::unordered_map<T, Weight> distance; // Store distance from start to each vertex
+        Weight upperBound = std::numeric_limits<Weight>::max();
+
+        using Pair = std::pair<Weight, T>; // (distance, vertex)
+        std::priority_queue<Pair, std::vector<Pair>, std::greater<Pair>> minHeap; // Min heap
+
+        distance[start] = Weight(); // Default construct weight (0 for numeric types)
+        minHeap.push({Weight(), start});
+
+        while (!minHeap.empty()) {
+            T current = minHeap.top().second;
+            Weight currentDistance = minHeap.top().first;
+            minHeap.pop();
+
+            // Check if the dequeued distance matches the current shortest known distance
+            if (currentDistance != distance[current]) continue;
+
+            // If currentDistance is already greater than upperBound, no need to continue
+            if (currentDistance > upperBound) continue;
+
+            std::cout << "Vertex: " << current << ", Distance: " << currentDistance << std::endl;
+
+            // If current vertex is terminal, update the upper bound if necessary
+            if (isTerminal(current) && currentDistance < upperBound) {
+                upperBound = currentDistance;
+                std::cout << "Found terminal vertex: " << current << ", updating upper bound to: " << upperBound << std::endl;
+            }
+
+            for (const auto& pair : getNeighbors(current)) {
+                const T& neighbor = pair.first;
+                Weight edgeWeight = pair.second;
+
+                if (
+                    distance.find(neighbor) == distance.end() || 
+                    currentDistance + edgeWeight < distance[neighbor]
+                ) {
+                    distance[neighbor] = currentDistance + edgeWeight;
+                    minHeap.push({distance[neighbor], neighbor});
+                }
+            }
+        }
+    }
 
     void BFS(const T& start, std::function<std::vector<T>(const T&)> getNeighbors) {
         std::unordered_map<T, bool> visited;
